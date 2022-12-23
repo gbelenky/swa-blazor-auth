@@ -12,7 +12,8 @@
             <ProductList ErrorMessage="@errorMessage"
                          Products="@products"
                          SelectProduct="@SelectProduct"
-                         DeleteProduct="@DeleteProduct" />
+                         DeleteProduct="@DeleteProduct"
+                         User ="@user"/>
         </div>
     </div>
 
@@ -28,10 +29,12 @@
     private Product productToDelete;
     private bool showModal;
     private string modalMessage = "";
+    private User user;
 
     protected override async Task OnInitializedAsync()
     {
         products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products");
+        user = await http.GetFromJsonAsync<User>("/.auth/me");
     }
 
     private void AddNewProduct()
