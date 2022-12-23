@@ -1,6 +1,7 @@
 ﻿@page "/products"
 @inject HttpClient http
 @inject NavigationManager navigation
+@inject ILogger<Products> logger
 
 <div class="content-container">
     <ListHeader Title="My List"
@@ -33,8 +34,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products");
         user = await http.GetFromJsonAsync<User>("/.auth/me");
+        products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products");
+        logger.LogDebug(user.ToString());
+        logger.LogDebug(products.ToString());
+
+
     }
 
     private void AddNewProduct()
@@ -45,6 +50,7 @@
     private async Task HandleRefresh()
     {
         products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products");
+        logger.LogDebug(products.ToString());
     }
 
     private void SelectProduct(Product product)
