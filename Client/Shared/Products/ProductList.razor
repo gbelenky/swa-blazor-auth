@@ -1,4 +1,8 @@
-﻿@if (!string.IsNullOrEmpty(ErrorMessage))
+﻿@inject HttpClient http
+
+<div>@user</div>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
 {
     <div>@ErrorMessage</div>
 }
@@ -41,4 +45,10 @@ else
     [Parameter] public EventCallback<Product> DeleteProduct { get; set; }
     [Parameter] public EventCallback<Product> SelectProduct { get; set; }
     [Parameter] public string ErrorMessage { get; set; }
+    User user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await http.GetFromJsonAsync<User>("/.auth/me");
+    }
 }
