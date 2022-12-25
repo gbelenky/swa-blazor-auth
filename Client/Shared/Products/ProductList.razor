@@ -3,7 +3,7 @@
 
 @if (user != null)
 {
-    <div>This is the authenticated user: @user.clientPrincipal.userId</div>
+    <div>This is the authenticated user: @user.clientPrincipal.userDetails</div>
 } else
 {
     ErrorMessage = "No authenticated user ";
