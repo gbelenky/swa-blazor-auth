@@ -1,6 +1,13 @@
 ﻿@inject HttpClient http
 
-<div> User Information: @user.userId </div>
+
+@if (user != null)
+{
+    <div>This is the authenticated user: @user.clientPrincipal.userId</div>
+} else
+{
+    ErrorMessage = "No authenticated user ";
+}
 
 @if (!string.IsNullOrEmpty(ErrorMessage))
 {
