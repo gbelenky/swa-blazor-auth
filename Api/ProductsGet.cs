@@ -20,8 +20,6 @@ public class ProductsGet
     public ProductsGet(IProductData productData, ILogger log)
     {
         this.productData = productData;
-        this.log = log;
-
     }
 
     [FunctionName("ProductsGet")]
