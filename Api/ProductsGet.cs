@@ -28,7 +28,6 @@ public class ProductsGet
         var products = await productData.GetProducts();
         var principal = Parse(req, log);
         log.LogInformation($"Principal.  Identity{principal.Identity}, {principal.ToString}");
-        var cookiePrincipal = GetClientPrincipal(req, log);
         return new OkObjectResult(products);
     }
 
@@ -59,27 +58,6 @@ public class ProductsGet
         identity.AddClaims(principal.UserRoles.Select(r => new Claim(ClaimTypes.Role, r)));
 
         return new ClaimsPrincipal(identity);
-    }
-
-
-    private ClientPrincipal GetClientPrincipal(HttpRequest req, ILogger log)
-    {
-        var principal = new ClientPrincipal();
-
-        var swaCookie = req.Cookies["StaticWebAppsAuthCookie"];
-
-        if (swaCookie != null)
-        {
-            log.LogInformation("SWA Cookie Found");
-            var decoded = Convert.FromBase64String(swaCookie);
-            log.LogInformation("SWA Cookie Decoded to a Byte Array");
-            var json = Encoding.UTF8.GetString(decoded);
-            log.LogInformation($"SWA Cookie JSON: {json}");
-            principal = JsonSerializer.Deserialize<ClientPrincipal>(json);
-            log.LogInformation($"SWA Cookie Deserialized");
-        }
-
-        return principal;
     }
 
     public class ClientPrincipal
