@@ -17,7 +17,7 @@ public class ProductsGet
 {
     private readonly IProductData productData;
 
-    public ProductsGet(IProductData productData, ILogger log)
+    public ProductsGet(IProductData productData)
     {
         this.productData = productData;
     }
