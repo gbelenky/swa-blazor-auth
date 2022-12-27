@@ -1,6 +1,5 @@
 ﻿namespace Client
 {
-
     public class User
     {
         public Clientprincipal clientPrincipal { get; set; }
@@ -20,5 +19,4 @@
         public string typ { get; set; }
         public string val { get; set; }
     }
-
 }
