@@ -34,11 +34,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-#if DEBUG
-        user = await http.GetFromJsonAsync<User>("http://localhost:4280/.auth/me");
-#else
-        user = await http.GetFromJsonAsync<User>("/.auth/me");
-#endif
+        #if DEBUG
+            user = await http.GetFromJsonAsync<User>("http://localhost:4280/.auth/me");
+        #else
+            user = await http.GetFromJsonAsync<User>("/.auth/me");
+        #endif
+
 
 
         products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products");

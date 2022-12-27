@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-
 namespace Api;
 
 public class ProductsGet
@@ -28,7 +27,8 @@ public class ProductsGet
     {
         var products = await productData.GetProducts();
         var principal = Parse(req, log);
-        log.LogDebug($"Principal.  Identity{principal.Identity}, {principal.ToString}");
+        log.LogInformation($"Principal.  Identity{principal.Identity}, {principal.ToString}");
+        var cookiePrincipal = GetClientPrincipal(req, log);
         return new OkObjectResult(products);
     }
 
@@ -42,7 +42,7 @@ public class ProductsGet
             var data = header[0];
             var decoded = Convert.FromBase64String(data);
             var json = Encoding.UTF8.GetString(decoded);
-            log.LogDebug($"JSON value: {json}");
+            log.LogInformation($"JSON value: {json}");
             principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
@@ -61,11 +61,39 @@ public class ProductsGet
         return new ClaimsPrincipal(identity);
     }
 
-    private class ClientPrincipal
+
+    private ClientPrincipal GetClientPrincipal(HttpRequest req, ILogger log)
     {
-        public string IdentityProvider { get; set; }
-        public string UserId { get; set; }
-        public string UserDetails { get; set; }
-        public IEnumerable<string> UserRoles { get; set; }
+        var principal = new ClientPrincipal();
+
+        var swaCookie = req.Cookies["StaticWebAppsAuthCookie"];
+
+        if (swaCookie != null)
+        {
+            log.LogInformation("SWA Cookie Found");
+            var decoded = Convert.FromBase64String(swaCookie);
+            log.LogInformation("SWA Cookie Decoded to a Byte Array");
+            var json = Encoding.UTF8.GetString(decoded);
+            log.LogInformation($"SWA Cookie JSON: {json}");
+            principal = JsonSerializer.Deserialize<ClientPrincipal>(json);
+            log.LogInformation($"SWA Cookie Deserialized");
+        }
+
+        return principal;
+    }
+
+    public class ClientPrincipal
+    {
+        public string IdentityProvider { get; set; } = null!;
+        public string UserId { get; set; } = null!;
+        public string UserDetails { get; set; } = null!;
+        public IEnumerable<string> UserRoles { get; set; } = null!;
+        public IEnumerable<ClientPrincipalClaim>? Claims { get; set; }
+    }
+
+    public class ClientPrincipalClaim
+    {
+        public string Typ { get; set; } = null!;
+        public string Val { get; set; } = null!;
     }
 }
