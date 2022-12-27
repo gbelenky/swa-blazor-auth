@@ -41,10 +41,11 @@ public class ProductsGet
 
         if (req.Headers.TryGetValue("x-ms-client-principal", out var header))
         {
-            log.LogDebug($"Principal. Identity{principal.UserId}, {principal.ToString}");
+            log.LogDebug($"x-ms-client-principal exists");
             var data = header[0];
             var decoded = Convert.FromBase64String(data);
             var json = Encoding.UTF8.GetString(decoded);
+            log.LogDebug($"JSON value: {json}");
             principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
