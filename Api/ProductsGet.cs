@@ -16,7 +16,6 @@ namespace Api;
 public class ProductsGet
 {
     private readonly IProductData productData;
-    private ILogger log;
 
     public ProductsGet(IProductData productData, ILogger log)
     {
@@ -27,15 +26,15 @@ public class ProductsGet
 
     [FunctionName("ProductsGet")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
     {
         var products = await productData.GetProducts();
-        var principal = Parse(req);
+        var principal = Parse(req, log);
         log.LogDebug($"Principal.  Identity{principal.Identity}, {principal.ToString}");
         return new OkObjectResult(products);
     }
 
-    public ClaimsPrincipal Parse(HttpRequest req)
+    public ClaimsPrincipal Parse(HttpRequest req, ILogger log)
     {
         var principal = new ClientPrincipal();
 
