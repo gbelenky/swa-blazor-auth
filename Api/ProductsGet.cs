@@ -16,28 +16,32 @@ namespace Api;
 public class ProductsGet
 {
     private readonly IProductData productData;
+    private ILogger log;
 
-    public ProductsGet(IProductData productData)
+    public ProductsGet(IProductData productData, ILogger log)
     {
         this.productData = productData;
+        this.log = log;
+
     }
 
     [FunctionName("ProductsGet")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req)
     {
         var products = await productData.GetProducts();
         var principal = Parse(req);
-        log.LogTrace($"Principal.  Identity{principal.Identity}, {principal.ToString}");
+        log.LogDebug($"Principal.  Identity{principal.Identity}, {principal.ToString}");
         return new OkObjectResult(products);
     }
 
-    public static ClaimsPrincipal Parse(HttpRequest req)
+    public ClaimsPrincipal Parse(HttpRequest req)
     {
         var principal = new ClientPrincipal();
 
         if (req.Headers.TryGetValue("x-ms-client-principal", out var header))
         {
+            log.LogDebug($"Principal. Identity{principal.UserId}, {principal.ToString}");
             var data = header[0];
             var decoded = Convert.FromBase64String(data);
             var json = Encoding.UTF8.GetString(decoded);
