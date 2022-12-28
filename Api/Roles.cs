@@ -24,7 +24,7 @@ namespace Api
 
         [FunctionName(nameof(GetPrincipal))]
         public async Task<IActionResult> GetPrincipal(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "roles")] HttpRequest request
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "roles")] HttpRequest request
         )
         {
             var principal = await _principalService.GetPrincipal(request);
