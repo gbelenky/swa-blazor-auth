@@ -27,7 +27,7 @@ public class ProductsGet
     {
         var products = await productData.GetProducts();
         var principal = Parse(req, log);
-        log.LogInformation($"Principal.  Identity{principal.Identity}, {principal.ToString}");
+        log.LogInformation($"Principal.  Identity{principal.Identity.Name}, {principal.Claims.ToString}");
 
         var claims = await StaticWebAppsAuth.Parse(req, log);
         foreach (var claim in claims.Claims)
