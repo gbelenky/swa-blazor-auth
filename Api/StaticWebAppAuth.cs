@@ -94,11 +94,11 @@ public static class StaticWebAppsAuth
         // need to see if this can be done with just one call to MS graph. perhaps using ID is a better option
         foreach (var roleId in roleIds)
         {
-                var application = await graphClient.Applications["746a425a-0078-41d3-9226-f6cf56f7a7fe"].Request()
-	.GetAsync();
-    //log.LogInformation($"app -{application.DisplayName}");
-    log.LogInformation($"Role: {application.AppRoles.FirstOrDefault(x=> x.Id.ToString() == roleId).Value}");
-    identity.AddClaim(new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", application.AppRoles.FirstOrDefault(x=> x.Id.ToString() == roleId).Value));
+            var application = await graphClient.Applications["6a74b4e1-6751-400c-828a-c8c0e14385de"].Request()
+.GetAsync();
+            //log.LogInformation($"app -{application.DisplayName}");
+            log.LogInformation($"Role: {application.AppRoles.FirstOrDefault(x => x.Id.ToString() == roleId).Value}");
+            identity.AddClaim(new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", application.AppRoles.FirstOrDefault(x => x.Id.ToString() == roleId).Value));
         }
     }
 
@@ -119,10 +119,10 @@ public static class GetUserMicrosoftGraph
 
     private static IAuthenticationProvider CreateAuthorizationProvider()
     {
-        var clientId = System.Environment.GetEnvironmentVariable("AzureADAppClientId", EnvironmentVariableTarget.Process);
-        var clientSecret = System.Environment.GetEnvironmentVariable("AzureADAppClientSecret", EnvironmentVariableTarget.Process);
-        var redirectUri = System.Environment.GetEnvironmentVariable("AzureADAppRedirectUri", EnvironmentVariableTarget.Process);
-        var tenantId = System.Environment.GetEnvironmentVariable("AzureADAppTenantId", EnvironmentVariableTarget.Process);
+        var clientId = System.Environment.GetEnvironmentVariable("AZURE_CLIENT_ID", EnvironmentVariableTarget.Process);
+        var clientSecret = System.Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET", EnvironmentVariableTarget.Process);
+        var redirectUri = System.Environment.GetEnvironmentVariable("AAD_REDIRECT_URI", EnvironmentVariableTarget.Process);
+        var tenantId = System.Environment.GetEnvironmentVariable("AAD_TENANT_ID", EnvironmentVariableTarget.Process);
         var authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
 
         //this specific scope means that application will default to what is defined in the application registration rather than using dynamic scopes
