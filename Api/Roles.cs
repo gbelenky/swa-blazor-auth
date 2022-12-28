@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Linq;
-    
+
 
 namespace Api
 {
@@ -37,6 +37,28 @@ namespace Api
             };
 
             return new OkObjectResult(data);
+        }
+
+        [FunctionName(nameof(AmIInRole))]
+        public async Task<IActionResult> AmIInRole(
+          [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "am-i-in-role")] HttpRequest request
+      )
+        {
+            var role = request.Query["role"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(role))
+                return new BadRequestObjectResult("role query parameter is required");
+
+            var principal = await _principalService.GetPrincipal(request);
+
+            var isInRole = principal?.IsInRole(role) == true;
+            if (!isInRole)
+                return new ObjectResult($"Forbidden for {role}")
+                {
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+
+            return new OkObjectResult($"Welcome {principal?.Identity?.Name} - you have role {role}!");
         }
     }
 }
