@@ -36,8 +36,6 @@ public class ProductsGet
                 log.LogInformation("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
             }
         }
-        */
         return new OkObjectResult(products);
     }
-
 }
