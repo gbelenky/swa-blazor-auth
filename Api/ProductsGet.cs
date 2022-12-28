@@ -26,9 +26,16 @@ public class ProductsGet
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
     {
         var products = await productData.GetProducts();
-        var principal = Parse(req, log);
-        log.LogInformation($"Principal.  Identity{principal.Identity.Name}, {principal.Claims.ToString}");
-        
+        //var principal = Parse(req, log);
+        //log.LogInformation($"Principal.  Identity{principal.Identity.Name}, {principal.Claims.ToString}");
+        ClaimsPrincipal principal = req.HttpContext.User as ClaimsPrincipal;
+        if (null != principal)
+        {
+            foreach (Claim claim in principal.Claims)
+            {
+                log.LogInformation("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
+            }
+        }
         return new OkObjectResult(products);
     }
 
