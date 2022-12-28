@@ -28,6 +28,13 @@ public class ProductsGet
         var products = await productData.GetProducts();
         var principal = Parse(req, log);
         log.LogInformation($"Principal.  Identity{principal.Identity}, {principal.ToString}");
+
+        var claims = await StaticWebAppsAuth.Parse(req, log);
+        foreach (var claim in claims.Claims)
+        {
+            log.LogInformation($"claim: {claim.Type} - {claim.Value}");
+        }
+
         return new OkObjectResult(products);
     }
 
