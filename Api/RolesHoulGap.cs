@@ -30,6 +30,10 @@ namespace Api
                 }
             }
 
+            // adding some test claims to the roles list
+            roles.Add("test1");
+            roles.Add("test2");
+
             return new OkObjectResult(roles);
         }
     }
