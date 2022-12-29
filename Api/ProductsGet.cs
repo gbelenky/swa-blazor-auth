@@ -27,11 +27,11 @@ public class ProductsGet
     {
 
         var products = await productData.GetProducts();
-        var principal = StaticWebAppsAuth.Parse(req);
+        var principal = StaticWebAppsAuthWarrenAndre.Parse(req, log);
   
         if (null != principal)
         {
-            foreach (Claim claim in principal.Claims)
+            foreach (Claim claim in principal.)
             {
                 log.LogInformation("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
             }
