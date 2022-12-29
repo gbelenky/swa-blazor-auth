@@ -1,6 +1,6 @@
 {
   "auth": {
-    "rolesSource": "/api/rolesHoulGap",
+    "rolesSource": "/api/rolesWarrenAndre",
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
