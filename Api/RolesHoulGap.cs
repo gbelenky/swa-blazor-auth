@@ -17,7 +17,7 @@ namespace Api
         [FunctionName("GetRoles")]
         public async Task<IActionResult> GetRoles(
      [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "rolesHoulGap")]
-    HttpRequest req)
+    HttpRequest req, ILogger log)
         {
             var payload = JsonConvert.DeserializeObject<UserPayload>(await req.ReadAsStringAsync());
 
@@ -33,6 +33,11 @@ namespace Api
             // adding some test claims to the roles list
             roles.Add("test1");
             roles.Add("test2");
+
+            foreach (var role in roles)
+            {
+                log.LogInformation($"Role: {role}");
+            }
 
             return new OkObjectResult(roles);
         }
