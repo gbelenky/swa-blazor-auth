@@ -93,7 +93,7 @@ public static class StaticWebAppsAuthWarrenAndre
         // need to see if this can be done with just one call to MS graph. perhaps using ID is a better option
         foreach (var roleId in roleIds)
         {
-            var application = await graphClient.Applications["6a74b4e1-6751-400c-828a-c8c0e14385de"].Request()
+            var application = await graphClient.Applications["14abeb1d-0c4b-47e3-ba57-cb4199399b27"].Request()
 .GetAsync();
             //log.LogInformation($"app -{application.DisplayName}");
             log.LogInformation($"Role: {application.AppRoles.FirstOrDefault(x => x.Id.ToString() == roleId).Value}");
