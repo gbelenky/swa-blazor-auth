@@ -34,7 +34,21 @@ namespace Api.Auth
             }
 
             return new OkObjectResult(roles);
-            
+
+        }
+        public class UserPayload
+        {
+            public string identityProvider { get; set; }
+            public string userId { get; set; }
+            public string userDetails { get; set; }
+            public string accessToken { get; set; }
+            public List<UserClaims> claims { get; set; } = new();
+
+            public class UserClaims
+            {
+                public string typ { get; set; }
+                public string val { get; set; }
+            }
         }
     }
 }
