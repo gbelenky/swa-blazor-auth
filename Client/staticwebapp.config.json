@@ -1,6 +1,6 @@
 {
   "auth": {
-    "rolesSource": "/api/rolesWarrenAndre",
+    "rolesSource": "/api/auth-roles",
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
