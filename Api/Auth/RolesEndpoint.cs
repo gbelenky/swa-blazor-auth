@@ -19,7 +19,7 @@ namespace Api.Auth
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "auth-roles")] HttpRequest req,
             ILogger log)
         {
-            ClaimsPrincipal principal = ClaimsService.Parse(req, log);
+            ClaimsPrincipal principal = ClaimsService.Parse(req,log);
             var identity = principal?.Identity;
             var data = new
             {

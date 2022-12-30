@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-namespace Api;
 using System.Security.Claims;
+using Api.Auth;
+
+namespace Api;
 
 public class ProductsGet
 {
