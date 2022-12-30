@@ -26,17 +26,18 @@ public class ProductsGet
     [FunctionName("ProductsGet")]
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
-    {   
-        ClaimsPrincipal principal = ClaimsService.Parse(req, log);
-  
-        if (null != principal)
+    {
+        var header = req.Headers["x-ms-client-principal"];
+        var data = header.FirstOrDefault();
+        if (data == null)
         {
-            foreach (Claim claim in principal.Claims)
-            {
-                log.LogInformation("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
-            }
+            log.LogInformation("No x-ms-client-principal header found");
         }
-        
+
+        var decoded = System.Convert.FromBase64String(data);
+        var json = System.Text.ASCIIEncoding.ASCII.GetString(decoded);
+        log.LogInformation($"x-ms-client-principal content: {json}");
+
         var products = await productData.GetProducts();
 
         return new OkObjectResult(products);
