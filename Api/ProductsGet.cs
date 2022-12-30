@@ -9,15 +9,17 @@ namespace Api;
 public class ProductsGet
 {
     private readonly IProductData productData;
+     private readonly ILogger log;
 
-    public ProductsGet(IProductData productData)
+    public ProductsGet(IProductData productData, ILoggerFactory loggerFactory)
     {
         this.productData = productData;
+        log = loggerFactory.CreateLogger<ProductsGet>();
     }
 
     [Function("ProductsGet")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequestData req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequestData req)
     {
         var header = req.Headers.Where(h => h.Key.StartsWith("x-ms-client-principal"));
 

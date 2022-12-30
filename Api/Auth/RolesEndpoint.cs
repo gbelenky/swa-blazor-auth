@@ -8,12 +8,17 @@ using System.Security.Claims;
 
 namespace Api.Auth
 {
-    public static class RolesEndpoint
+    public class RolesEndpoint
     {
+        private readonly ILogger log;
+        public RolesEndpoint(ILoggerFactory loggerFactory)
+        {
+            log = loggerFactory.CreateLogger<ProductsGet>();
+        }
+
         [Function("RolesEndpoint")]
-        public static async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "auth-roles")] HttpRequestData req,
-            ILogger log)
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "auth-roles")] HttpRequestData req)
         {
             log.LogInformation("auth-roles endpoint called");
             var json = await req.ReadAsStringAsync();
