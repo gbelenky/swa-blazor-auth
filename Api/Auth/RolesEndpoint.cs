@@ -20,7 +20,9 @@ namespace Api.Auth
             ILogger log)
         {
             log.LogInformation("auth-roles endpoint called");
-            var payload = JsonConvert.DeserializeObject<UserPayload>(await req.ReadAsStringAsync());
+            var json = await req.ReadAsStringAsync();
+            log.LogInformation($"json: {json}");
+            var payload = JsonConvert.DeserializeObject<UserPayload>(json);
 
             var roles = new List<string>();
             foreach (var claim in payload.claims)
