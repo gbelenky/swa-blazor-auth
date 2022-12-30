@@ -13,7 +13,7 @@ namespace Api.Auth
         private readonly ILogger log;
         public RolesEndpoint(ILoggerFactory loggerFactory)
         {
-            log = loggerFactory.CreateLogger<ProductsGet>();
+            log = loggerFactory.CreateLogger<RolesEndpoint>();
         }
 
         [Function("RolesEndpoint")]
@@ -26,12 +26,17 @@ namespace Api.Auth
             var payload = JsonSerializer.Deserialize<UserPayload>(json);
 
             var roles = new List<string>();
-            foreach (var claim in payload.claims)
+            if (payload.claims != null)
             {
-                if (claim.typ == ClaimTypes.Role)
+                foreach (var claim in payload.claims)
                 {
-                    roles.Add(claim.val);
+                    if (claim.typ == ClaimTypes.Role)
+                    {
+                        roles.Add(claim.val);
+                    }
                 }
+            } else {
+                log.LogInformation("No claims found");
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);

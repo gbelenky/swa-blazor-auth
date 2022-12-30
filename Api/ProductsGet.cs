@@ -9,7 +9,7 @@ namespace Api;
 public class ProductsGet
 {
     private readonly IProductData productData;
-     private readonly ILogger log;
+    private readonly ILogger log;
 
     public ProductsGet(IProductData productData, ILoggerFactory loggerFactory)
     {
@@ -27,17 +27,24 @@ public class ProductsGet
         if (data.Key == null)
         {
             log.LogInformation("No x-ms-client-principal header found");
+            var response = req.CreateResponse(HttpStatusCode.Unauthorized);
+            await response.WriteStringAsync("No x-ms-client-principal header found");
+            return response;
+        }
+        else
+        {
+            var decoded = System.Convert.FromBase64String(data.Value.First());
+            var json = System.Text.ASCIIEncoding.ASCII.GetString(decoded);
+            log.LogInformation($"x-ms-client-principal content: {json}");
+
+            var products = await productData.GetProducts();
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(new { products = products });
+
+            return response;
         }
 
-        var decoded = System.Convert.FromBase64String(data.Value.First());
-        var json = System.Text.ASCIIEncoding.ASCII.GetString(decoded);
-        log.LogInformation($"x-ms-client-principal content: {json}");
 
-        var products = await productData.GetProducts();
-
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(new { products = products });
-
-        return response;
     }
 }
