@@ -20,7 +20,7 @@ namespace Api.Auth
             ILogger log)
         {
             log.LogInformation("auth-roles endpoint called");
-            ClaimsPrincipal principal = ClaimsService.Parse(req,log);
+            ClaimsPrincipal principal = ClaimsService.Parse(req, log);
             var identity = principal?.Identity;
             var data = new
             {

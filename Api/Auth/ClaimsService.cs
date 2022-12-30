@@ -31,6 +31,8 @@ namespace Api.Auth
                 var json = Encoding.UTF8.GetString(decoded);
                 log.LogInformation($"x-ms-client-principal: {json}");
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            } else {
+                log.LogInformation("x-ms-client-principal not found");
             }
 
             principal.UserRoles = principal.UserRoles?.Except(new string[] { "anonymous" }, StringComparer.CurrentCultureIgnoreCase);
