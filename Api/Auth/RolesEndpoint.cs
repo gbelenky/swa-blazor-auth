@@ -19,6 +19,7 @@ namespace Api.Auth
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "auth-roles")] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("auth-roles endpoint called");
             ClaimsPrincipal principal = ClaimsService.Parse(req,log);
             var identity = principal?.Identity;
             var data = new
