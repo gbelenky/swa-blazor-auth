@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Security.Claims;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Api.Auth
 {
@@ -20,16 +20,19 @@ namespace Api.Auth
             ILogger log)
         {
             log.LogInformation("auth-roles endpoint called");
-            ClaimsPrincipal principal = ClaimsService.Parse(req, log);
-            var identity = principal?.Identity;
-            var data = new
-            {
-                Name = identity?.Name ?? "",
-                AuthenticationType = identity?.AuthenticationType ?? "",
-                Claims = principal?.Claims.Select(c => new { c.Type, c.Value }),
-            };
+            var payload = JsonConvert.DeserializeObject<UserPayload>(await req.ReadAsStringAsync());
 
-            return new OkObjectResult(data);
+            var roles = new List<string>();
+            foreach (var claim in payload.claims)
+            {
+                if (claim.typ == ClaimTypes.Role)
+                {
+                    roles.Add(claim.val);
+                }
+            }
+
+            return new OkObjectResult(roles);
+            
         }
     }
 }
