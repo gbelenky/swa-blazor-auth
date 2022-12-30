@@ -26,10 +26,8 @@ public class ProductsGet
     [FunctionName("ProductsGet")]
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
-    {
-
-        var products = await productData.GetProducts();
-        ClaimsPrincipal principal = await StaticWebAppsAuthWarrenAndre.Parse(req, log);
+    {   
+        ClaimsPrincipal principal = ClaimsService.Parse(req, log);
   
         if (null != principal)
         {
@@ -38,6 +36,9 @@ public class ProductsGet
                 log.LogInformation("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
             }
         }
+        
+        var products = await productData.GetProducts();
+
         return new OkObjectResult(products);
     }
 }
