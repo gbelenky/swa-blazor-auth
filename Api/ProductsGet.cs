@@ -21,7 +21,7 @@ public class ProductsGet
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequestData req)
     {
-    
+        
         var header = req.Headers.Where(h => h.Key.StartsWith("x-ms-client-principal"));
 
         var data = header.FirstOrDefault();
@@ -41,8 +41,8 @@ public class ProductsGet
             var products = await productData.GetProducts();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new { products = products });
-
+            //await response.WriteAsJsonAsync(new { products = products });
+            await response.WriteAsJsonAsync(products);
             return response;
         }
 
