@@ -14,7 +14,7 @@
   "routes": [
     {
       "route": "/api/products/*",
-      "allowedRoles": [ "authenticated" ]
+      "allowedRoles": [ "authenticated", "Item.Read" ]
     },
     {
       "route": "/login",
