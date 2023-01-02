@@ -24,9 +24,18 @@ namespace Api.Auth
             var json = await req.ReadAsStringAsync();
             log.LogInformation($"json: {json}");
             var payload = JsonSerializer.Deserialize<UserPayload>(json);
+            if (payload == null)
+            {
+                log.LogInformation("No payload found");
+                var response = req.CreateResponse(HttpStatusCode.Unauthorized);
+                return response;
+            } else  {
+                log.LogInformation($"payload with the following number of claims found: {payload.claims.Count}");
+            }
 
             var roles = new List<string>();
-            if (payload.claims != null)
+
+            if (payload.claims != null && payload.claims.Count > 0)
             {
                 foreach (var claim in payload.claims)
                 {
