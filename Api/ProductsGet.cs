@@ -41,19 +41,22 @@ public class ProductsGet
             log.LogInformation($"x-ms-client-principal content: {json}");
 
             var identity = JsonSerializer.Deserialize<Identity>(json);
+            
+            string customerRole = identity.userRoles.FirstOrDefault(s => s.Contains("Customer"));
+            string customer = customerRole.Split(".").LastOrDefault();
+            log.LogInformation($"Customer role: {customer}");
+            
 
-            log.LogInformation($"identity: {identity}");
-            foreach (var role in identity.userRoles)
-            {
-                log.LogInformation($"role: {role}");
-            }
+            string accessRole = identity.userRoles.FirstOrDefault(s => s.Contains("Item"));
+            string access = accessRole.Split(".").LastOrDefault();
+            log.LogInformation($"Access role: {access}");
 
-        var products = await productData.GetProducts();
+            var products = await productData.GetProducts();
 
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(products);
-        return response;
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(products);
+            return response;
+        }
+
     }
-
-}
 }
