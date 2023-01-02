@@ -33,6 +33,7 @@ namespace Api.Auth
                     if (claim.typ == ClaimTypes.Role)
                     {
                         roles.Add(claim.val);
+                        log.LogInformation($"claim found: {claim.typ}, claim value: {claim.val}");
                     }
                 }
                 var response = req.CreateResponse(HttpStatusCode.OK);
