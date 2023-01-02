@@ -2,6 +2,8 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using Api.Auth;
 
 
 namespace Api;
@@ -21,7 +23,7 @@ public class ProductsGet
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequestData req)
     {
-        
+
         var header = req.Headers.Where(h => h.Key.StartsWith("x-ms-client-principal"));
 
         var data = header.FirstOrDefault();
@@ -38,13 +40,20 @@ public class ProductsGet
             var json = System.Text.ASCIIEncoding.ASCII.GetString(decoded);
             log.LogInformation($"x-ms-client-principal content: {json}");
 
-            var products = await productData.GetProducts();
+            var identity = JsonSerializer.Deserialize<Identity>(json);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            //await response.WriteAsJsonAsync(new { products = products });
-            await response.WriteAsJsonAsync(products);
-            return response;
-        }
+            log.LogInformation($"identity: {identity}");
+            foreach (var role in identity.userRoles)
+            {
+                log.LogInformation($"role: {role}");
+            }
 
+        var products = await productData.GetProducts();
+
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        await response.WriteAsJsonAsync(products);
+        return response;
     }
+
+}
 }
