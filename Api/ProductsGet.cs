@@ -4,18 +4,18 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Api.Auth;
+using Api.Data;
 
 
 namespace Api;
 
 public class ProductsGet
 {
-    private readonly IProductData productData;
     private readonly ILogger log;
 
     public ProductsGet(ILoggerFactory loggerFactory)
     {
-        log = loggerFactory.CreateLogger<ProductsGet>();
+        log = loggerFactory.CreateLogger("ProductsGet");
     }
 
     [Function("ProductsGet")]
@@ -49,8 +49,7 @@ public class ProductsGet
             string accessRole = identity.userRoles.FirstOrDefault(s => s.Contains("Item"));
             log.LogInformation($"Access role: {accessRole}");
 
-            ProductData productData = new ProductData();
-            var products = await productData.GetProducts();
+            var products = await ProductData.GetProducts();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(products);

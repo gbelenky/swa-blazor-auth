@@ -26,6 +26,7 @@ namespace Api.Auth
             var payload = JsonSerializer.Deserialize<UserPayload>(json);
 
             var roles = new List<string>();
+            roles.Add("FakeRole");
             if (payload.claims != null)
             {
                 foreach (var claim in payload.claims)
