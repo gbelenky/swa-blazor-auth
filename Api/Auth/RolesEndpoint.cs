@@ -35,14 +35,16 @@ namespace Api.Auth
                         roles.Add(claim.val);
                     }
                 }
-            } else {
-                log.LogInformation("No claims found");
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                await response.WriteAsJsonAsync(new { roles = roles });
+                return response;
             }
-
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new { roles = roles });
-            return response;
-
+            else
+            {
+                log.LogInformation("No claims found");
+                var response = req.CreateResponse(HttpStatusCode.Unauthorized);
+                return response;
+            }
         }
         public class UserPayload
         {
