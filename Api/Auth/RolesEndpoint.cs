@@ -24,37 +24,21 @@ namespace Api.Auth
             var json = await req.ReadAsStringAsync();
             log.LogInformation($"json: {json}");
             var payload = JsonSerializer.Deserialize<UserPayload>(json);
-            if (payload == null)
-            {
-                log.LogInformation("No payload found");
-                var response = req.CreateResponse(HttpStatusCode.Unauthorized);
-                return response;
-            } else  {
-                log.LogInformation($"payload with the following number of claims found: {payload.claims.Count}");
-            }
-
+            log.LogInformation($"payload with the following number of claims found: {payload.claims.Count}");
+            
             var roles = new List<string>();
 
-            if (payload.claims != null && payload.claims.Count > 0)
+            foreach (var claim in payload.claims)
             {
-                foreach (var claim in payload.claims)
-                {
-                    if (claim.typ == ClaimTypes.Role)
+                if (claim.typ.Equals("roles"))
                     {
-                        roles.Add(claim.val);
-                        log.LogInformation($"claim found: {claim.typ}, claim value: {claim.val}");
-                    }
+                    roles.Add(claim.val);
+                    log.LogInformation($"claim found: {claim.typ}, claim value: {claim.val}");
                 }
-                var response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(new { roles = roles });
-                return response;
             }
-            else
-            {
-                log.LogInformation("No claims found");
-                var response = req.CreateResponse(HttpStatusCode.Unauthorized);
-                return response;
-            }
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(new { roles = roles });
+            return response;
         }
         public class UserPayload
         {
