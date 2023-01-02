@@ -13,9 +13,8 @@ public class ProductsGet
     private readonly IProductData productData;
     private readonly ILogger log;
 
-    public ProductsGet(IProductData productData, ILoggerFactory loggerFactory)
+    public ProductsGet(ILoggerFactory loggerFactory)
     {
-        this.productData = productData;
         log = loggerFactory.CreateLogger<ProductsGet>();
     }
 
@@ -50,6 +49,7 @@ public class ProductsGet
             string accessRole = identity.userRoles.FirstOrDefault(s => s.Contains("Item"));
             log.LogInformation($"Access role: {accessRole}");
 
+            ProductData productData = new ProductData();
             var products = await productData.GetProducts();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
