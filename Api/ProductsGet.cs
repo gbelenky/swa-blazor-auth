@@ -48,8 +48,7 @@ public class ProductsGet
             
 
             string accessRole = identity.userRoles.FirstOrDefault(s => s.Contains("Item"));
-            string access = accessRole.Split(".").LastOrDefault();
-            log.LogInformation($"Access role: {access}");
+            log.LogInformation($"Access role: {accessRole}");
 
             var products = await productData.GetProducts();
 
